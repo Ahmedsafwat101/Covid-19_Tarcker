@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/Rgcollection"
+        android:id="@+id/radioGroupMetric"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -52,11 +52,12 @@
         android:id="@+id/SparkView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
-        app:layout_constraintTop_toBottomOf="@id/Rgcollection" />
+        app:layout_constraintBottom_toTopOf="@+id/radioGroupTimeSlection"
+        app:layout_constraintTop_toBottomOf="@id/radioGroupMetric"
+        android:layout_margin="16dp"/>
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioGroupTimeSlection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
