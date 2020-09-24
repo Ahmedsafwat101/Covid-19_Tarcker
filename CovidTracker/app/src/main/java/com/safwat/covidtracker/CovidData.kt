@@ -4,14 +4,14 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class CovidData(
-    @SerializedName("dateChecked") val dateChecked: Date,
+    @SerializedName("date") val dateChecked: Date,
 
-    @SerializedName("positiveIncrease") val positiveIncrease: String,
+    @SerializedName("positive") val positiveIncrease: Int,
 
-    @SerializedName("negativeIncrease") val negativeIncrease: String,
+    @SerializedName("negative") val negativeIncrease: Int,
 
-    @SerializedName("deathIncrease") val deathIncrease: String,
+    @SerializedName("death") val deathIncrease: Int,
 
-    @SerializedName("states") val states: String,
+    @SerializedName("state") val states: String,
 
     )

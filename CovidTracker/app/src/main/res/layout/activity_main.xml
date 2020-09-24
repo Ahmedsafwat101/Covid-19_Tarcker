@@ -11,12 +11,26 @@
         android:id="@+id/TvSelectState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="State"
+        android:layout_marginStart="32dp"
+        android:foregroundGravity="center"
+        android:text=" States "
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045" />
+
+    <org.angmarch.views.NiceSpinner
+        android:id="@+id/DataSetSpinnner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/radioGroupMetric"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/TvSelectState"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        />
 
     <RadioGroup
         android:id="@+id/radioGroupMetric"
@@ -54,7 +68,8 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/radioGroupTimeSlection"
         app:layout_constraintTop_toBottomOf="@id/radioGroupMetric"
-        android:layout_margin="16dp"/>
+        android:background="@color/backgroundShade"
+      />
 
     <RadioGroup
         android:id="@+id/radioGroupTimeSlection"
@@ -62,7 +77,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/TvNumber"
+        app:layout_constraintBottom_toTopOf="@+id/TikerNumber"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -70,19 +85,22 @@
             android:id="@+id/BtWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Week" />
+            android:text="Week"
+            android:padding="8dp"/>
 
         <RadioButton
             android:id="@+id/BtMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Month" />
+            android:text="Month"
+            android:padding="8dp"/>
 
         <RadioButton
             android:id="@+id/BtMax"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Max" />
+            android:text="Max"
+            android:padding="8dp"/>
     </RadioGroup>
 
     <TextView
@@ -97,8 +115,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/TvNumber"
+    <com.robinhood.ticker.TickerView
+        android:id="@+id/TikerNumber"
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:gravity="center"

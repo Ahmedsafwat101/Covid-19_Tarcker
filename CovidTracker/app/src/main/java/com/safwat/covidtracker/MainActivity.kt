@@ -1,13 +1,13 @@
 package com.safwat.covidtracker
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.robinhood.ticker.TickerUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +19,7 @@ import java.util.*
 
 private const val BASE_URL = "https://api.covidtracking.com/v1/"
 private const val TAG = "MainActivity"
+private const val ALL_STATES = "All regions"
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,12 +30,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create()
+
+        val gson = GsonBuilder(). setDateFormat("yyyy-MM-dd'T'HH:mm:ss.S")
+            .create()
+        Log.i(TAG,"Gson$gson")
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         val covidServices = retrofit.create(CovidService::class.java)
+
         /***Fetch the National data***/
         covidServices.getNationalData().enqueue(object : Callback<List<CovidData>> {
             override fun onResponse(
@@ -43,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Log.i(TAG, "OnResponse$response")
                 val nationalResponse = response.body()
-                if (nationalResponse == null) {
+                if (nationalResponse.isNullOrEmpty()) {
                     Log.w(TAG, "Did not receive a Valid response body")
                     return
                 }
@@ -53,46 +58,52 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "Update graph with " + nationalDailyData)
                 updateDisplayWithData(nationalDailyData)
             }
-
             override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
                 Log.e(TAG, "OnFailure$t")
-                Toast.makeText(
-                    applicationContext,
-                    "Error fetching National Data",
-                    Toast.LENGTH_SHORT
-                ).show()
+
             }
 
         })
 
-        /***Fetch the States data***/
+                                        /***Fetch the States data***/
         covidServices.getStatesData().enqueue(object : Callback<List<CovidData>> {
             override fun onResponse(
-                call: Call<List<CovidData>>,
-                response: Response<List<CovidData>>
-            ) {
+                call: Call<List<CovidData>>, response: Response<List<CovidData>>) {
                 Log.i(TAG, "OnResponse$response")
                 val stateResponse = response.body()
-                if (stateResponse == null) {
+                if (stateResponse.isNullOrEmpty() ) {
                     Log.w(TAG, "Did not receive a Valid response body")
                     return
                 }
                 perStateDailyData = stateResponse.reversed().groupBy { it.states }
-                Log.i(TAG, "Update spinner with states name " + perStateDailyData)
+                Log.i(TAG, "Update spinner with states name ")
+                updateSpinierData(perStateDailyData.keys)
             }
 
             override fun onFailure(call: Call<List<CovidData>>, t: Throwable) {
-                Log.e(TAG, "OnFailure$t")
-                Toast.makeText(
-                    applicationContext,
-                    "Error fetching National Data",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Log.e(TAG, "OnFailure $t")
             }
         })
     }
 
+    private fun updateSpinierData(stateNames: Set<String>) {
+        val stateList = stateNames.toMutableList()
+        stateList.sort()
+        stateList.add(0, ALL_STATES)
+
+        //Add List to our spinner
+        DataSetSpinnner.attachDataSource(stateList)
+        DataSetSpinnner.setOnSpinnerItemSelectedListener { parent, view, position, id ->
+            val selectedState = parent.getItemAtPosition(position) as String
+            val selectedData = perStateDailyData[selectedState] ?: nationalDailyData
+            updateDisplayWithData(selectedData)
+        }
+        //Add Spinner
+    }
+
     private fun setupEventListener() {
+
+        TikerNumber.setCharacterLists(TickerUtils.provideNumberList())
         //Add Listener for Scrubbing on the SparkView
         SparkView.isScrubEnabled = true
         SparkView.setScrubListener { value ->
@@ -129,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         }
         val colorInt = ContextCompat.getColor(this, color)
         SparkView.lineColor = colorInt
-        TvNumber.setTextColor(colorInt)
+        TikerNumber.setTextColor(colorInt)
         adapter.metric = metric
         adapter.notifyDataSetChanged()
 
@@ -156,9 +167,10 @@ class MainActivity : AppCompatActivity() {
             Metric.POSITIVE -> recentCovidData.positiveIncrease
             Metric.DEATH -> recentCovidData.deathIncrease
         }
-        TvNumber.text = numCases
+        TikerNumber.text = numCases.toString()
         val outputDateFormat = SimpleDateFormat("MMMM dd, yyyy ", Locale.US)
         TvDate.text = outputDateFormat.format(recentCovidData.dateChecked)
+
 
     }
 }

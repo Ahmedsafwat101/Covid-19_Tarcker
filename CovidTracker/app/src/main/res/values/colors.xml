@@ -6,4 +6,8 @@
     <color name="colorPositive">#FFB700</color>
     <color name="colorNegative">#008911</color>
     <color name="colorDeath">#A90028</color>
+    <color name="backgroundShade">#F3F1FA</color>
+    <color name="background">#C7C6CC</color>
+    <color name="selectedbackground">#8C8D91</color>
+
 </resources>
